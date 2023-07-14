@@ -2,12 +2,14 @@ import React,{useState, useEffect} from "react";
 import './App.css';
 import {ButtonPage} from "./page/ButtonPage";
 import { CheckboxPage } from "./page/CheckboxPage";
+import { TooltipPage } from "./page/TooltipPage";
 
 
 function App() {
 
   const [currentList, setCurrentList] = useState("Button")
   const [currentPage, setCurrentPage] = useState(<ButtonPage/>)
+  const [isLeftMenuClose, setLeftMenuClose] = useState(true);
 
   const componentList = [
     {
@@ -28,6 +30,10 @@ function App() {
         {
           name: "Badge",
           tag: <ButtonPage/>
+        },
+        {
+          name: "Tooltip",
+          tag: <TooltipPage/>
         }]
     },{
       name: "Field",
@@ -55,17 +61,19 @@ function App() {
   const selectComponent = (content) => {
     setCurrentList(content.name);
     setCurrentPage(content.tag);
+    setLeftMenuClose(true);
   }
 
   return (
     <div className="w-screen h-screen">
-      <div className="w-full h-14 flex items-center justify-center border-b border-[#ccc]">
+      <div className="w-full h-14 flex items-center justify-center border-b border-[#ccc] relative">
+        <div className="w-6 h-6 bg-pink-400 absolute top-1/2 left-4 -translate-y-1/2 cursor-pointer hidden max-md:block" onClick={() => setLeftMenuClose(!isLeftMenuClose)}></div>
         <p className="text-xl font-bold">Design Guide</p>
       </div>
-      <div className="w-[1440px] h-[calc(100vh_-_56px)] my-0 mx-auto flex">
+      <div className="max-w-[1440px] h-[calc(100vh_-_56px)] my-0 mx-auto flex">
 
         {/* left menu */}
-        <div className="w-64 h-full overflow-y-auto border-r border-[#ccc]">
+        <div className={`w-64 h-full overflow-y-auto overflow-x-hidden border-r border-[#ccc] pl-6 ${isLeftMenuClose ? "max-md:w-0 max-md:pl-0" : "max-md:w-full"}`}>
           {componentList.map((category, index) => 
             <div className="[&:first-child]:pt-6 [&:not(:last-child)]:pb-5">
               <p className="font-bold text-lg mb-2">{category.name}</p>
@@ -79,7 +87,7 @@ function App() {
         </div>
 
         {/* content */}
-        <div className="w-[1184px] h-full overflow-y-auto">
+        <div className="flex-1 h-full overflow-y-auto overflow-x-hidden">
           <div className="p-6">
             {currentPage}
           </div>
